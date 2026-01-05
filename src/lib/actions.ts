@@ -2,7 +2,6 @@
 
 import { z } from 'zod';
 import { signIn, signOut } from '@/auth';
-import { AuthError } from 'next/auth';
 import { getUserByEmail, createUser as dbCreateUser, updateBackupLog as dbUpdateBackupLog, createSchedule as dbCreateSchedule } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -22,14 +21,6 @@ export async function authenticate(prevState: string | undefined, formData: Form
 
     await signIn(email);
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Credenciales incorrectas.';
-        default:
-          return 'Algo salió mal.';
-      }
-    }
     console.error(error);
     return 'Se produjo un error inesperado.';
   }
