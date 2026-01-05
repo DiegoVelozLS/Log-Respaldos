@@ -55,15 +55,16 @@ export function MainNav({ role }: { role: UserRole }) {
             const href = link.href === '/dashboard' ? getDashboardPath() : link.href;
             return (
                 <SidebarMenuItem key={link.href}>
-                <Link href={href} legacyBehavior passHref>
-                    <SidebarMenuButton
+                <SidebarMenuButton
+                    asChild
                     isActive={pathname === href}
                     tooltip={link.label}
                     >
-                    <link.icon />
-                    <span>{link.label}</span>
-                    </SidebarMenuButton>
-                </Link>
+                    <Link href={href}>
+                        <link.icon />
+                        <span>{link.label}</span>
+                    </Link>
+                </SidebarMenuButton>
                 </SidebarMenuItem>
             )
         })}
