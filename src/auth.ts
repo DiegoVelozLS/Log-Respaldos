@@ -54,11 +54,5 @@ export async function getSession(): Promise<SessionPayload | null> {
         return null;
     }
     
-    // Refresh the session so it doesn't expire
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    const newSessionPayload = { ...session, expires: expires.toISOString() };
-    const newSessionCookie = await encrypt(newSessionPayload);
-    cookies().set('session', newSessionCookie, { expires, httpOnly: true });
-
     return session as SessionPayload;
 }
