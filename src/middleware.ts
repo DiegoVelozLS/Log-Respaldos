@@ -22,11 +22,11 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
-    if (pathname.startsWith('/supervisor') && role === 'technician') {
+    if (pathname.startsWith('/supervisor') && role !== 'supervisor' && role !== 'administrator') {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     
-    if (pathname.startsWith('/technician') && role === 'supervisor') {
+    if (pathname.startsWith('/technician') && role !== 'technician') {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
