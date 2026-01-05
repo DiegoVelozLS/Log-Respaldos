@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react';
 import { updateBackupLog, type RegisterState } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import { AlertTriangle, Check, Loader2, X } from 'lucide-react';
 const initialState: RegisterState = { message: null, errors: {} };
 
 export default function RegisterForm({ log, user }: { log: BackupLog, user: User }) {
-  const [state, dispatch] = useFormState(updateBackupLog, initialState);
+  const [state, dispatch] = useActionState(updateBackupLog, initialState);
 
   return (
     <form action={dispatch} className="space-y-6">

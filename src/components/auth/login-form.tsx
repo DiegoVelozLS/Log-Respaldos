@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react';
 import { authenticate } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [errorMessage, dispatch, isPending] = useActionState(authenticate, undefined);
 
   return (
     <form action={dispatch} className="w-full">
@@ -41,19 +41,17 @@ export default function LoginForm() {
           </div>
         </CardContent>
         <CardFooter>
-          <LoginButton />
+          <LoginButton isPending={isPending} />
         </CardFooter>
       </Card>
     </form>
   );
 }
 
-function LoginButton() {
-  const { pending } = useFormStatus();
-
+function LoginButton({ isPending }: { isPending: boolean }) {
   return (
-    <Button type="submit" className="w-full" aria-disabled={pending}>
-      {pending ? <Loader2 className="animate-spin" /> : 'Ingresar'}
+    <Button type="submit" className="w-full" aria-disabled={isPending}>
+      {isPending ? <Loader2 className="animate-spin" /> : 'Ingresar'}
     </Button>
   );
 }

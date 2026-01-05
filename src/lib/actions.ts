@@ -20,7 +20,10 @@ export async function authenticate(prevState: string | undefined, formData: Form
     }
 
     await signIn(email);
-  } catch (error) {
+  } catch (error: any) {
+    if (error.type === 'CredentialsSignin') {
+      return 'Credenciales incorrectas.';
+    }
     console.error(error);
     return 'Se produjo un error inesperado.';
   }
