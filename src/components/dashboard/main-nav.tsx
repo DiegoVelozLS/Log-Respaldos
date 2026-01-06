@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import type { UserRole } from '@/lib/definitions';
 import { usePathname } from 'next/navigation';
 import {
