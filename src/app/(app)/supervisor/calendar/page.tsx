@@ -104,7 +104,7 @@ export default async function GeneralCalendarPage() {
                 <div className="flex flex-col gap-2">
                 {Object.entries(logsByDate).slice(-5).reverse().map(([date, dateLogs]) => (
                     <div key={date}>
-                        <h3 className="font-semibold text-lg mb-2">{date}</h3>
+                        <h3 className="font-semibold text-lg mb-2">{new Date(date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
                         <div className="flex flex-col gap-2">
                             {dateLogs.map(log => <LogItem key={log.id} log={log} />)}
                         </div>

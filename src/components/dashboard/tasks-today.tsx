@@ -101,7 +101,7 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
                                 <ChevronRight className="h-4 w-4" />
                             </Link>
                         </Button>
-                    ) : isAdmin && log.status !== 'pending' ? (
+                    ) : (log.status !== 'pending' || isAdmin) ? (
                         <Button asChild variant="outline" size="sm">
                             <Link href={`/technician/register/${log.id}`}>
                                 Ver Detalles

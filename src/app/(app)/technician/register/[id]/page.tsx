@@ -19,28 +19,34 @@ export default async function RegisterBackupPage({ params }: { params: { id: str
     redirect('/technician');
   }
 
+  const statusConfig = {
+    pending: { label: 'Pendiente', variant: 'secondary' },
+    completed: { label: 'Completado', variant: 'default', className: 'bg-green-100 text-green-800' },
+    with_issues: { label: 'Con Novedades', variant: 'default', className: 'bg-yellow-100 text-yellow-800' },
+    failed: { label: 'Fallido', variant: 'destructive' },
+  } as const;
+
+  const currentStatus = statusConfig[log.status];
+
   return (
     <div className="mx-auto max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>
-            {log.status === 'pending' ? 'Registrar Estado de Respaldo' : 'Detalles del Registro'}
-          </CardTitle>
-          <CardDescription>
-            {log.status === 'pending'
-                ? 'Selecciona el estado del respaldo y añade comentarios si es necesario.'
-                : 'Información detallada del registro de respaldo.'
-            }
-          </CardDescription>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>
+                {log.status === 'pending' ? 'Registrar Estado de Respaldo' : 'Detalles del Registro'}
+              </CardTitle>
+              <CardDescription>
+                {log.backupName} - {log.scheduledDate}
+              </CardDescription>
+            </div>
+            <Badge variant={currentStatus.variant as any} className={currentStatus.className}>
+                {currentStatus.label}
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
-            <div className="space-y-4 mb-6 p-4 border rounded-lg bg-secondary/30">
-                <h3 className="font-semibold">{log.backupName}</h3>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Tipo: <Badge variant="secondary">{log.backupType}</Badge></span>
-                    <span>Fecha programada: {log.scheduledDate}</span>
-                </div>
-            </div>
             <RegisterForm log={log} user={session.user} />
         </CardContent>
       </Card>
