@@ -76,6 +76,9 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
                 </TableRow>
             ) : logs.map(log => {
               const config = statusConfig[log.status];
+              const isPending = log.status === 'pending';
+              const canRegister = isPending && !isAdmin;
+
               return (
                 <TableRow key={log.id}>
                   <TableCell>
@@ -95,19 +98,19 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
                   </TableCell>
                   <TableCell className="text-right">
                     <Button asChild variant="outline" size="sm">
-                        <Link href={`/technician/register/${log.id}`}>
-                            {log.status === 'pending' && !isAdmin ? (
-                                <>
-                                    Registrar
-                                    <ChevronRight className="h-4 w-4" />
-                                </>
-                            ) : (
-                                <>
-                                    Ver Detalles
-                                    <Eye className="h-4 w-4" />
-                                </>
-                            )}
-                        </Link>
+                      <Link href={`/technician/register/${log.id}`}>
+                        {canRegister ? (
+                          <>
+                            Registrar
+                            <ChevronRight className="h-4 w-4" />
+                          </>
+                        ) : (
+                          <>
+                            Ver Detalles
+                            <Eye className="h-4 w-4" />
+                          </>
+                        )}
+                      </Link>
                     </Button>
                   </TableCell>
                 </TableRow>
