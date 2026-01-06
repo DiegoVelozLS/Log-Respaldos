@@ -94,21 +94,21 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
                     {log.completedAt ? format(parseISO(log.completedAt), 'HH:mm:ss', { locale: es }) : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
-                    {log.status === 'pending' && !isAdmin ? (
-                        <Button asChild variant="outline" size="sm">
-                            <Link href={`/technician/register/${log.id}`}>
-                                Registrar
-                                <ChevronRight className="h-4 w-4" />
-                            </Link>
-                        </Button>
-                    ) : (log.status !== 'pending' || isAdmin) ? (
-                        <Button asChild variant="outline" size="sm">
-                            <Link href={`/technician/register/${log.id}`}>
-                                Ver Detalles
-                                <Eye className="h-4 w-4" />
-                            </Link>
-                        </Button>
-                    ) : null}
+                    <Button asChild variant="outline" size="sm">
+                        <Link href={`/technician/register/${log.id}`}>
+                            {log.status === 'pending' && !isAdmin ? (
+                                <>
+                                    Registrar
+                                    <ChevronRight className="h-4 w-4" />
+                                </>
+                            ) : (
+                                <>
+                                    Ver Detalles
+                                    <Eye className="h-4 w-4" />
+                                </>
+                            )}
+                        </Link>
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
