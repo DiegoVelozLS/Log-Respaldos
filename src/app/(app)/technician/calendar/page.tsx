@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState, useMemo } from "react";
 import { getLogs } from "@/lib/data";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusConfig = {
   pending: {
@@ -61,16 +65,29 @@ function LogItem({ log }: { log: BackupLog }) {
 }
 
 
-export default async function CalendarPage() {
-  const logs = await getLogs();
-  const logsByDate = logs.reduce((acc, log) => {
-    const date = log.scheduledDate;
-    if (!acc[date]) {
-      acc[date] = [];
+export default function CalendarPage() {
+  const [logs, setLogs] = useState<BackupLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLogs() {
+      const allLogs = await getLogs();
+      setLogs(allLogs);
+      setLoading(false);
     }
-    acc[date].push(log);
-    return acc;
-  }, {} as Record<string, BackupLog[]>);
+    fetchLogs();
+  }, []);
+
+  const logsByDate = useMemo(() => {
+    return logs.reduce((acc, log) => {
+      const date = log.scheduledDate;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(log);
+      return acc;
+    }, {} as Record<string, BackupLog[]>);
+  }, [logs]);
 
   const modifiers = {
     scheduled: (date: Date) => {
@@ -87,6 +104,35 @@ export default async function CalendarPage() {
     }
   };
   
+  if (loading) {
+    return (
+        <div className="flex flex-col gap-6">
+            <div>
+                <Skeleton className="h-10 w-1/2" />
+                <Skeleton className="h-4 w-3/4 mt-2" />
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card className="lg:col-span-2">
+                    <CardContent className="p-2 sm:p-4">
+                        <Skeleton className="h-[300px] w-full" />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-8 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6">
        <div>
@@ -114,7 +160,7 @@ export default async function CalendarPage() {
                 <div className="flex flex-col gap-2">
                 {Object.entries(logsByDate).slice(-5).reverse().map(([date, dateLogs]) => (
                     <div key={date}>
-                        <h3 className="font-semibold text-lg mb-2">{date}</h3>
+                        <h3 className="font-semibold text-lg mb-2">{new Date(date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
                         <div className="flex flex-col gap-2">
                             {dateLogs.map(log => <LogItem key={log.id} log={log} />)}
                         </div>

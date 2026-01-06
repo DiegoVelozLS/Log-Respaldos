@@ -1,5 +1,5 @@
 import { getLogById } from "@/lib/data";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getSession } from "@/auth";
 import RegisterForm from "@/components/technician/register-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,17 +12,11 @@ export default async function RegisterBackupPage({ params }: { params: { id: str
   if (!log || !session) {
     notFound();
   }
-  
-  const canEdit = session.user.role === 'administrator' || session.user.role === 'supervisor';
-
-  if (log.status !== 'pending' && !canEdit) {
-    redirect('/technician');
-  }
 
   const statusConfig = {
     pending: { label: 'Pendiente', variant: 'secondary' },
-    completed: { label: 'Completado', variant: 'default', className: 'bg-green-100 text-green-800' },
-    with_issues: { label: 'Con Novedades', variant: 'default', className: 'bg-yellow-100 text-yellow-800' },
+    completed: { label: 'Completado', variant: 'default', className: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' },
+    with_issues: { label: 'Con Novedades', variant: 'default', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300' },
     failed: { label: 'Fallido', variant: 'destructive' },
   } as const;
 
