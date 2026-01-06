@@ -35,7 +35,10 @@ export async function signIn(email: string) {
     if (!user) throw new Error("User not found");
 
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    const sessionPayload: SessionPayload = { user, expires: expires.toISOString() };
+    
+    // Exclude password from the user object that goes into the session
+    const { password, ...userWithoutPassword } = user;
+    const sessionPayload: SessionPayload = { user: userWithoutPassword, expires: expires.toISOString() };
     
     const session = await encrypt(sessionPayload);
 
