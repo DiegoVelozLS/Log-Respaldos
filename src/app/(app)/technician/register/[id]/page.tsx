@@ -13,7 +13,9 @@ export default async function RegisterBackupPage({ params }: { params: { id: str
     notFound();
   }
   
-  if (log.status !== 'pending') {
+  const canEdit = session.user.role === 'administrator' || session.user.role === 'supervisor';
+
+  if (log.status !== 'pending' && !canEdit) {
     redirect('/technician');
   }
 
@@ -21,9 +23,14 @@ export default async function RegisterBackupPage({ params }: { params: { id: str
     <div className="mx-auto max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>Registrar Estado de Respaldo</CardTitle>
+          <CardTitle>
+            {log.status === 'pending' ? 'Registrar Estado de Respaldo' : 'Detalles del Registro'}
+          </CardTitle>
           <CardDescription>
-            Selecciona el estado del respaldo y añade comentarios si es necesario.
+            {log.status === 'pending'
+                ? 'Selecciona el estado del respaldo y añade comentarios si es necesario.'
+                : 'Información detallada del registro de respaldo.'
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>

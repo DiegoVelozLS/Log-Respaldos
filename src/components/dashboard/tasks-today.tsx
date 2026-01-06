@@ -16,7 +16,7 @@ import {
 import type { BackupLog } from '@/lib/definitions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, CheckCircle2, ChevronRight, Clock, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronRight, Clock, Eye, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -53,7 +53,7 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>
-          Lista de respaldos programados para ser registrados hoy.
+          Lista de respaldos programados.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -63,6 +63,7 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
               <TableHead>Estado</TableHead>
               <TableHead>Nombre del Respaldo</TableHead>
               <TableHead>Tipo</TableHead>
+              {isAdmin && <TableHead>Fecha</TableHead>}
               {isAdmin && <TableHead>Registrado por</TableHead>}
               <TableHead>Hora de Registro</TableHead>
               <TableHead className="text-right">Acción</TableHead>
@@ -71,7 +72,7 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
           <TableBody>
             {logs.length === 0 ? (
                 <TableRow>
-                    <TableCell colSpan={isAdmin ? 6 : 5} className="text-center h-24">No hay respaldos programados para hoy.</TableCell>
+                    <TableCell colSpan={isAdmin ? 7 : 5} className="text-center h-24">No hay respaldos para mostrar.</TableCell>
                 </TableRow>
             ) : logs.map(log => {
               const config = statusConfig[log.status];
@@ -87,19 +88,27 @@ export default function TasksToday({ logs, title, isAdmin = false }: { logs: Bac
                   </TableCell>
                   <TableCell className="font-medium">{log.backupName}</TableCell>
                   <TableCell>{log.backupType}</TableCell>
+                  {isAdmin && <TableCell>{log.scheduledDate}</TableCell>}
                   {isAdmin && <TableCell>{log.completedBy?.name || 'N/A'}</TableCell>}
                   <TableCell>
                     {log.completedAt ? format(parseISO(log.completedAt), 'HH:mm:ss', { locale: es }) : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
-                    {log.status === 'pending' && !isAdmin && (
+                    {log.status === 'pending' && !isAdmin ? (
                         <Button asChild variant="outline" size="sm">
                             <Link href={`/technician/register/${log.id}`}>
                                 Registrar
                                 <ChevronRight className="h-4 w-4" />
                             </Link>
                         </Button>
-                    )}
+                    ) : isAdmin && log.status !== 'pending' ? (
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={`/technician/register/${log.id}`}>
+                                Ver Detalles
+                                <Eye className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               );

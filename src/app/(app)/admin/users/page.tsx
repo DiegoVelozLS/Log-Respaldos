@@ -11,8 +11,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Trash2, Edit } from "lucide-react";
 import CreateUserForm from "@/components/admin/create-user-form";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export default async function UsersPage() {
   const users = await getUsers();
@@ -57,6 +58,7 @@ export default async function UsersPage() {
               <TableHead>Nombre</TableHead>
               <TableHead>Correo Electrónico</TableHead>
               <TableHead>Rol</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -68,6 +70,25 @@ export default async function UsersPage() {
                   <Badge variant={user.role === 'administrator' ? 'destructive' : 'secondary'}>
                     {roleLabels[user.role] || user.role}
                   </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

@@ -15,9 +15,6 @@ export default function LoginPage() {
           </p>
         </div>
         <LoginForm />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          Usuario por defecto: <span className="font-medium text-foreground">admin@listosoft.com</span> / <span className="font-medium text-foreground">12345</span>
-        </p>
       </div>
     </main>
   );
