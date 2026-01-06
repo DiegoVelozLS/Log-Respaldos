@@ -9,6 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import CreateUserForm from "@/components/admin/create-user-form";
 
 export default async function UsersPage() {
   const users = await getUsers();
@@ -21,9 +25,25 @@ export default async function UsersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
+      <div className="flex items-center justify-between">
         <h1 className="font-headline text-3xl font-bold">Gestión de Usuarios</h1>
-        <p className="text-muted-foreground">Crea, edita y gestiona los usuarios del sistema.</p>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle />
+              <span>Nuevo Usuario</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Crear Nuevo Usuario</DialogTitle>
+              <DialogDescription>
+                Complete los detalles para agregar un nuevo usuario al sistema.
+              </DialogDescription>
+            </DialogHeader>
+            <CreateUserForm />
+          </DialogContent>
+        </Dialog>
       </div>
       <Card>
         <CardHeader>

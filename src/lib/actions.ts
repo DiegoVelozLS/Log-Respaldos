@@ -21,7 +21,7 @@ export async function authenticate(prevState: string | undefined, formData: Form
 
     await signIn(email);
   } catch (error: any) {
-    if (error.type === 'CredentialsSignin') {
+    if (error.message.includes('CredentialsSignin')) {
       return 'Credenciales incorrectas.';
     }
     console.error(error);
@@ -37,14 +37,13 @@ export async function logout() {
 // --- Admin Actions ---
 
 const UserFormSchema = z.object({
-    id: z.string(),
     firstName: z.string().min(1, 'El nombre es requerido.'),
     lastName: z.string().min(1, 'El apellido es requerido.'),
     email: z.string().email('Correo electrónico no válido.'),
     password: z.string().min(5, 'La contraseña debe tener al menos 5 caracteres.'),
     role: z.enum(['administrator', 'supervisor', 'technician']),
 });
-const CreateUser = UserFormSchema.omit({ id: true });
+
 export type UserState = {
   errors?: {
     firstName?: string[];
@@ -56,7 +55,7 @@ export type UserState = {
   message?: string | null;
 };
 export async function createUser(prevState: UserState, formData: FormData) {
-    const validatedFields = CreateUser.safeParse({
+    const validatedFields = UserFormSchema.safeParse({
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
         email: formData.get('email'),
@@ -76,7 +75,7 @@ export async function createUser(prevState: UserState, formData: FormData) {
     try {
         const existingUser = await getUserByEmail(email);
         if (existingUser) {
-            return { message: 'El correo electrónico ya está en uso.' };
+            return { message: 'El correo electrónico ya está en uso.', errors: { email: ['Este correo ya está registrado.'] } };
         }
         await dbCreateUser({ firstName, lastName, email, password, role: role as UserRole });
     } catch (error) {
@@ -84,7 +83,7 @@ export async function createUser(prevState: UserState, formData: FormData) {
     }
 
     revalidatePath('/admin/users');
-    return { message: 'Usuario creado exitosamente.', errors: {} };
+    redirect('/admin/users');
 }
 
 
@@ -113,9 +112,6 @@ export async function createSchedule(prevState: ScheduleState, formData: FormDat
 
     if (rawData.frequency === 'daily') {
         rawData.daysOfWeek = ['0', '1', '2', '3', '4', '5', '6'];
-    } else if (rawData.frequency === 'weekly') {
-        // Assume first day is the weekly day
-        rawData.daysOfWeek = [rawData.daysOfWeek[0]];
     }
 
     const validatedFields = ScheduleFormSchema.safeParse(rawData);
@@ -134,7 +130,7 @@ export async function createSchedule(prevState: ScheduleState, formData: FormDat
     }
     
     revalidatePath('/admin/schedules');
-    return { message: 'Programación creada exitosamente.', errors: {} };
+    redirect('/admin/schedules');
 }
 
 

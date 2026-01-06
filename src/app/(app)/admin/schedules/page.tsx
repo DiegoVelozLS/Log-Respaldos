@@ -9,6 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import CreateScheduleForm from "@/components/admin/create-schedule-form";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default async function SchedulesPage() {
   const schedules = await getSchedules();
@@ -17,9 +21,28 @@ export default async function SchedulesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold">Programación de Respaldos</h1>
-        <p className="text-muted-foreground">Define y gestiona las tareas de respaldo recurrentes.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-headline text-3xl font-bold">Programación de Respaldos</h1>
+          <p className="text-muted-foreground">Define y gestiona las tareas de respaldo recurrentes.</p>
+        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle />
+              <span>Nueva Programación</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Crear Nueva Programación</DialogTitle>
+              <DialogDescription>
+                Complete los detalles para crear una nueva tarea de respaldo recurrente.
+              </DialogDescription>
+            </DialogHeader>
+            <CreateScheduleForm />
+          </DialogContent>
+        </Dialog>
       </div>
       <Card>
         <CardHeader>
